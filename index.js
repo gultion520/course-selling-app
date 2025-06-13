@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
+const { mongodbURL } = require("./config");
+
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
@@ -15,10 +17,8 @@ app.use("/admin", adminRouter);
 
 async function main() {
 
-  const promise = await mongoose.connect(
-    "mongodb+srv://gulshanrp2000:VvBhRa280gcknBwM@cluster0.t8vnuh7.mongodb.net/coursera-app"
-  );
-  
+  const promise = await mongoose.connect(mongodbURL);
+
   app.listen(3000);
   console.log("app is listening");
 }

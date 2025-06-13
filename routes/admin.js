@@ -8,7 +8,9 @@ const { z } = require("zod");
 
 const jwt = require("jsonwebtoken");
 
-const JWT_ADMIN_PASSWORD = "dhfkjfh46";
+const { JWT_ADMIN_PASSWORD } = require("../config");
+
+const { adminMiddleware } = require("../middleware/admin");
 
 adminRouter.post("/signup", async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
@@ -52,10 +54,46 @@ adminRouter.post("/signin", async (req, res) => {
   }
 });
 
-adminRouter.use("/createCourse", (req, res) => {
-  res.json({
-    message: "admin endpoint",
-  });
+adminRouter.use("/createCourse", adminMiddleware, async (req, res) => {
+  const { title, description, price, imageUrl } = req.body;
+
+  try {
+    await adminModel.create({
+      title,
+      description,
+      price,
+      imageUrl,
+      creatorid: req.adminId,
+    });
+    res.status(200).json({
+      message: "course created",
+    });
+  } catch (e) {
+    res.status(403).json({
+      message: "unable to create course",
+    });
+  }
+});
+
+adminRouter.use("/changeCourse", adminMiddleware, async (req, res) => {
+  const { title, description, price, imageUrl } = req.body;
+
+  try {
+    await adminModel.create({
+      title,
+      description,
+      price,
+      imageUrl,
+      creatorid: req.adminId,
+    });
+    res.status(200).json({
+      message: "course created",
+    });
+  } catch (e) {
+    res.status(403).json({
+      message: "unable to create course",
+    });
+  }
 });
 
 module.exports = {
