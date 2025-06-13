@@ -1,7 +1,7 @@
 const { Router } = require("express");
+const mongoose = require("mongoose");
 
 const courseRouter = Router();
-
 
 courseRouter.post("/purchase", (res, req) => {
   req.json({
@@ -16,5 +16,8 @@ courseRouter.get("/preview", (req, res) => {
 });
 
 module.exports = {
-    courseRouter : courseRouter,
+  courseRouter: courseRouter,
 };
+mongoose.connect(
+  "mongodb+srv://gulshanrp2000:383bTaioW7uSij8r@cluster0.t8vnuh7.mongodb.net/coursera-app"
+);
