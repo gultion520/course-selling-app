@@ -18,6 +18,4 @@ courseRouter.get("/preview", (req, res) => {
 module.exports = {
   courseRouter: courseRouter,
 };
-mongoose.connect(
-  "mongodb+srv://gulshanrp2000:383bTaioW7uSij8r@cluster0.t8vnuh7.mongodb.net/coursera-app"
-);
+
