@@ -4,6 +4,8 @@ const adminRouter = Router();
 
 const { adminModel } = require("./db");
 
+const { courseModel } = require("./db");
+
 const { z } = require("zod");
 
 const jwt = require("jsonwebtoken");
@@ -54,19 +56,20 @@ adminRouter.post("/signin", async (req, res) => {
   }
 });
 
-adminRouter.use("/createCourse", adminMiddleware, async (req, res) => {
+adminRouter.post("/createCourse", adminMiddleware, async (req, res) => {
   const { title, description, price, imageUrl } = req.body;
 
   try {
-    await adminModel.create({
+    const course = await courseModel.create({
       title,
       description,
       price,
       imageUrl,
-      creatorid: req.adminId,
+      creatorId: req.adminId,
     });
     res.status(200).json({
       message: "course created",
+      courseId: course._id,
     });
   } catch (e) {
     res.status(403).json({
@@ -75,23 +78,47 @@ adminRouter.use("/createCourse", adminMiddleware, async (req, res) => {
   }
 });
 
-adminRouter.use("/changeCourse", adminMiddleware, async (req, res) => {
-  const { title, description, price, imageUrl } = req.body;
+adminRouter.put("/changeCourse", adminMiddleware, async (req, res) => {
+  const { title, description, price, imageUrl, courseId } = req.body;
 
   try {
-    await adminModel.create({
-      title,
-      description,
-      price,
-      imageUrl,
-      creatorid: req.adminId,
-    });
+    await courseModel.updateOne(
+      {
+        _id: courseId,
+        creatorId: req.adminId,
+      },
+      {
+        title,
+        description,
+        price,
+        imageUrl,
+      }
+    );
     res.status(200).json({
-      message: "course created",
+      message: "course update",
     });
   } catch (e) {
     res.status(403).json({
-      message: "unable to create course",
+      message: "unable to update course",
+    });
+  }
+});
+
+adminRouter.get("/bulk", adminMiddleware, async (req, res) => {
+
+  try {
+    const course = await courseModel.find(
+      {
+        creatorId: req.adminId,
+      }
+      );
+    res.status(200).json({
+      message: "found the following cources",
+      courses: course
+    });
+  } catch (e) {
+    res.status(403).json({
+      message: "unable to find any course",
     });
   }
 });

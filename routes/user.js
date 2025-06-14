@@ -8,6 +8,8 @@ const { z } = require("zod");
 
 const { userModel } = require("./db");
 
+const { purchaseModel } = require("./db");
+
 const { JWT_USER_PASSWORD } = require("../config");
 
 const { userMiddleware } = require("../middleware/user");
@@ -58,10 +60,14 @@ userRouter.post("/signin", async (req, res) => {
   });
 });
 
-userRouter.get("/purchases", (req, res) => {
-  res.json({
-    message: " user purchases endpooint",
+userRouter.get("/purchases",userMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const purchases = await purchaseModel.find({
+    userId
   });
+  res.json({
+    purchases 
+  })
 });
 
 module.exports = {
